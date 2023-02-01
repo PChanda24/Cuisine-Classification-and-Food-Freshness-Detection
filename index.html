@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        h1 {text-align: center; padding: 75px; background-color: yellow;}
+        .displaydiv {text-align: center;}
+        .itemadder {text-align: center;}
+        th {padding: 10px;}
+        td {padding: 10px;}
+        tr:nth-child(even) {background-color: lightgray;}
+        tr:nth-child(odd) {background-color: white;}
+    </style>
+    <title>Refrigeration Tracker</title>
+</head>
+<body style="background-color: lightcyan;">
+    <h1 style="font-size: 40pt;">Refrigeration Tracker</h1>
+    <div class="itemadder">Add food item manually: 
+        <form action="{{ url_for('add') }}" method="POST">
+            <br/>Name: <input type="text" name="fooditem"><br/><br/>
+            Expiry date: <input type="date" name="expdate"><br/><br/>
+            <input type="submit" value="Add Item">
+        </form>
+    </div>
+    <br/>
+    <br/>
+    <div class="displaydiv">
+        <table border="1" align="center" bordercolor="black">
+            <tr>
+                <th colspan="4" style="font-size: 30pt;">
+                    Items in fridge
+                </th>
+            </tr>
+            <tr>
+                <th colspan="1" style="font-size: 20pt;">
+                    Food item
+                </th>
+                <th colspan="1" style="font-size: 20pt;">
+                    Recommended consumption date
+                </th>
+                <th colspan="1" style="font-size: 20pt;">
+                    Days remaining
+                </th>
+                <th colspan="1" style="font-size: 20pt;">
+                    Mark as Consumed
+                </th>
+            </tr>
+            {% for food in incomplete %}
+                <tr>
+                    {% set diff = time.strftime("%d", time.gmtime((food.expdate - today).total_seconds())) %}
+                    <td style="font-size: 15pt;">{{ food.text }}</td>
+                    <td style="font-size: 15pt;">{{ food.expdate.strftime("%d-%m-%Y") }}</td>
+                    <td style="font-size: 15pt;">{{ diff }}</td>
+                    <td><a href="{{ url_for('consumed', id=food.id) }}"><button><img src="{{url_for('static', filename='tick logo.png') }}" width="25" height="25" /></button></a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
